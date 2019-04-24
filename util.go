@@ -1,7 +1,5 @@
 package thesaurus
 
-import "strings"
-
 // Filter filters an array of strings based on a predicate function
 func Filter(input []string, f func(string) bool) []string {
 	tmp := make([]string, 0)
@@ -40,15 +38,4 @@ func Min(input []int) int {
 		}
 	}
 	return 0
-}
-
-// Helper function to capitalize the first character of a string
-func capitalizeFirst(s string) string {
-	if len(s) > 1 {
-		return strings.ToUpper(string(s[0])) + s[1:]
-	} else if len(s) == 1 {
-		return strings.ToUpper(string(s[0]))
-	} else {
-		return ""
-	}
 }

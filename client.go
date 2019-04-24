@@ -11,9 +11,9 @@ import (
 
 const (
 	// baseURLString is the base URL for all Oxford API interactions
-	baseURLString = "https://od-api.oxforddictionaries.com/api/v1/"
+	baseURLString = "https://od-api.oxforddictionaries.com/api/v2/"
 
-	entriesURLString = baseURLString + "entries/"
+	entriesURLString = baseURLString + "thesaurus/"
 
 	httpRequestAcceptHeaderName = "Accept"
 	httpRequestAppIDHeaderName  = "app_id"
@@ -50,7 +50,7 @@ func init() {
 // Define takes a word string and returns a dictionary source.Result
 func (g *client) Define(word string) (*Results, error) {
 	// Prepare our URL
-	requestURL, err := url.Parse(entriesURLString + "en/" + word + "/synonyms;antonyms")
+	requestURL, err := url.Parse(entriesURLString + "en/" + word)
 
 	if nil != err {
 		return nil, err

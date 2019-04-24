@@ -66,8 +66,9 @@ func prettyPrint(resp *thesaurus.Results) {
 
 	for _, r := range resp.Results {
 		for _, lexEntry := range r.LexicalEntries {
+
 			// print part of speech
-			fmt.Println(color.YellowString(lexEntry.RenderLexicalCategory()), "\n")
+			fmt.Println(color.YellowString("%s\n", lexEntry.RenderLexicalCategory()))
 			for _, e := range lexEntry.Entries {
 				for i, sense := range e.Senses {
 					headerFmt := color.New(color.FgHiMagenta, color.Bold)
@@ -89,12 +90,6 @@ func prettyPrint(resp *thesaurus.Results) {
 					if sense.HasAntonyms() {
 						fmt.Println("\nANTONYMS")
 						fmt.Printf("- %s%s\n", sense.RenderTags(), sense.RenderAntonyms())
-					}
-
-					for _, subsense := range sense.Subsenses {
-						if subsense.HasAntonyms() {
-							fmt.Printf("- %s%s\n", subsense.RenderTags(), subsense.RenderAntonyms())
-						}
 					}
 
 					fmt.Println()
