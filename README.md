@@ -3,6 +3,7 @@
 A command-line thesaurus app for Oxford.
 
 ![](screenshot.jpg)
+<img src="thesaurusrex.jpg" width="300"/>
 
 ## Installation
 
