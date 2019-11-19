@@ -8,6 +8,6 @@ require (
 	github.com/ogier/pflag v0.0.1
 	github.com/rs/zerolog v1.11.0
 	github.com/spf13/viper v1.3.1
-	github.com/tidwall/gjson v1.1.5
+	github.com/tidwall/gjson v1.3.5
 	github.com/tidwall/match v1.0.1 // indirect
 )
