@@ -17,9 +17,13 @@ import (
 )
 
 func main() {
-
 	config := pflag.StringP("config", "c", "~/.define.conf.json", "path to config file")
+	disableColor := pflag.Bool("disable-color", false, "disable color output")
 	pflag.Parse()
+
+	if *disableColor || envDisableColor() {
+		color.NoColor = true
+	}
 
 	log.Logger = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr}).With().Timestamp().Logger()
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
@@ -54,7 +58,6 @@ func main() {
 	c := thesaurus.New(client, appID, appKey)
 
 	r, err := c.Define(pflag.Arg(0))
-
 	if err != nil {
 		log.Fatal().Err(err).Msg("error retrieving definition")
 	}
@@ -62,8 +65,18 @@ func main() {
 	prettyPrint(r)
 }
 
-func prettyPrint(resp *thesaurus.Results) {
+func envDisableColor() bool {
+	// check for the existence of NO_COLOR to satisfy the nocolor standard http://no-color.org
+	_, exists := os.LookupEnv("NO_COLOR")
+	if exists {
+		return true
+	}
+	// disable color if terminal is set to dumb
+	val, _ := os.LookupEnv("TERM")
+	return val == "DUMB"
+}
 
+func prettyPrint(resp *thesaurus.Results) {
 	for _, r := range resp.Results {
 		for _, lexEntry := range r.LexicalEntries {
 
@@ -94,11 +107,9 @@ func prettyPrint(resp *thesaurus.Results) {
 
 					fmt.Println()
 				}
-
 			}
 
 		}
-
 	}
 }
 
