@@ -1,3 +1,4 @@
+// nolint:whitespace,errcheck
 package main
 
 import (

@@ -22,7 +22,8 @@ const (
 	jsonMIMEType = "application/json"
 )
 
-type client struct {
+// Client bundles things needed to access the API
+type Client struct {
 	httpClient *http.Client
 	appID      string
 	appKey     string
@@ -32,8 +33,8 @@ type client struct {
 var apiURL *url.URL
 
 // New returns a new Oxford API dictionary source
-func New(httpClient http.Client, appID, appKey string) *client {
-	return &client{&httpClient, appID, appKey}
+func New(httpClient http.Client, appID, appKey string) *Client {
+	return &Client{&httpClient, appID, appKey}
 }
 
 // Initialize the package
@@ -48,7 +49,7 @@ func init() {
 }
 
 // Define takes a word string and returns a dictionary source.Result
-func (g *client) Define(word string) (*Results, error) {
+func (g *Client) Define(word string) (*Results, error) {
 	// Prepare our URL
 	requestURL, err := url.Parse(entriesURLString + "en/" + word)
 
