@@ -25,6 +25,7 @@ jobs:
           name: "Run tests"
           command: |
             make test
+
   release:
     docker:
       - image: circleci/golang:1.13
