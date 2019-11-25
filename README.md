@@ -12,7 +12,11 @@ A command-line thesaurus app for Oxford.
 <img src="thesaurusrex.jpg" width="300"/>
 
 ## Installation
+### Option 1: Binary
 
+Download the latest release from [https://github.com/jakewarren/thesaurus/releases/latest](https://github.com/jakewarren/thesaurus/releases/latest)
+
+### Option 2: From source
 If you have a working Go environment, you can install via `go get`:
 ```shell
 go get github.com/jakewarren/thesaurus/...
