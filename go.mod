@@ -9,7 +9,7 @@ require (
 	github.com/mitchellh/go-homedir v0.0.0-20161203194507-b8bc1bf76747
 	github.com/ogier/pflag v0.0.1
 	github.com/rs/zerolog v1.17.2
-	github.com/spf13/viper v1.5.0
+	github.com/spf13/viper v1.6.3
 	github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8 // indirect
 )
 
