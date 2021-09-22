@@ -29,7 +29,7 @@ github.com/mitchellh/mapstructure
 github.com/ogier/pflag
 # github.com/pelletier/go-toml v1.2.0
 github.com/pelletier/go-toml
-# github.com/rs/zerolog v1.17.2
+# github.com/rs/zerolog v1.19.0
 github.com/rs/zerolog
 github.com/rs/zerolog/internal/cbor
 github.com/rs/zerolog/internal/json
