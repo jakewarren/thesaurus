@@ -6,7 +6,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/ogier/pflag v0.0.1
 	github.com/rs/zerolog v1.17.2
-	github.com/spf13/viper v1.9.0
+	github.com/spf13/viper v1.14.0
 )
 
 go 1.13
