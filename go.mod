@@ -1,7 +1,7 @@
 module github.com/jakewarren/thesaurus
 
 require (
-	github.com/Rican7/define v0.1.2
+	github.com/Rican7/define v0.2.0
 	github.com/fatih/color v1.13.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/ogier/pflag v0.0.1
