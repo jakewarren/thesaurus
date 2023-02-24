@@ -4,70 +4,170 @@
 // common structures and operations for those implementations to use.
 package source
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Source defines an interface for interacting with different dictionaries
 type Source interface {
+	// Name returns the printable, human-readable name of the source.
 	Name() string
 
-	Define(word string) (Result, error)
+	// Define takes a word string and returns a list of dictionary results, and
+	// an error if any occurred.
+	Define(word string) (DictionaryResults, error)
 }
 
-// Result defines an interface for the results of a dictionary lookup
-type Result interface {
-	Headword() string
-	Language() string
-	Entries() []DictionaryEntry
+// Searcher defines an interface for a source that supports search capabilities
+type Searcher interface {
+	// Search takes a word string and returns a list of found words, and an
+	// error if any occurred.
+	Search(word string, limit uint) (SearchResults, error)
 }
 
-// Entry defines a composite interface for the complete account of a word
-type Entry interface {
-	WordEntry
-	DictionaryEntry
-	EtymologyEntry
-	ThesaurusEntry
+// DictionaryResults defines the structure of a list of dictionary word results
+type DictionaryResults []DictionaryResult
+
+// SearchResults defines the structure of a list of word search results
+type SearchResults []SearchResult
+
+// DictionaryResult defines the structure of a dictionary word result in a
+// specific language
+type DictionaryResult struct {
+	Language string
+	Word     string
+	Entries  []DictionaryEntry
 }
 
-// ComprehensiveDictionaryEntry defines a composite interface for a
-// comprehensive dictionary entry of a word
-type ComprehensiveDictionaryEntry interface {
-	DictionaryEntry
-	EtymologyEntry
+// SearchResult defines the structure of a word search result
+type SearchResult string
+
+// Entry defines the structure of an entry of a specific word
+type Entry struct {
+	Word            string
+	LexicalCategory string
 }
 
-// VersatileDictionaryEntry defines a composite interface for a versatile
-// dictionary entry of a word
-type VersatileDictionaryEntry interface {
-	DictionaryEntry
-	ThesaurusEntry
+// DictionaryEntry defines the structure of a dictionary entry of a word
+type DictionaryEntry struct {
+	Entry
+
+	Senses      []Sense
+	Etymologies []string // Origins of the word
+
+	Pronunciations
+	ThesaurusValues
 }
 
-// WordEntry defines an interface for an entry of a specific word
-type WordEntry interface {
-	Word() string
-	Category() string
+// Pronunciations defines the structure of a collection of pronunciations
+type Pronunciations []Pronunciation
+
+// Pronunciation defines the structure of a pronunciation of a word
+type Pronunciation string
+
+// Sense defines the structure of a particular meaning of a word
+type Sense struct {
+	Definitions []string
+	Categories  []string
+	Examples    []AttributedText
+	Notes       []string
+
+	ThesaurusValues
+
+	SubSenses []Sense
 }
 
-// DictionaryEntry defines an interface for a dictionary entry of a word
-type DictionaryEntry interface {
-	Pronunciation() string
-	Senses() []Sense
+// AttributedText defines the structure of a general text with attribution
+type AttributedText struct {
+	Text string
+
+	Attribution
 }
 
-// EtymologyEntry defines an interface for an etymological entry of a word
-type EtymologyEntry interface {
-	Etymologies() []string
+// Attribution defines the structure of a general attribution of a data piece
+type Attribution struct {
+	Author string
+	Source string
 }
 
-// ThesaurusEntry defines an interface for a thesaurus entry of a word
-type ThesaurusEntry interface {
-	Synonyms() []string
-	Antonyms() []string
+// ThesaurusValues defines the structure of the thesaurus values of a word
+type ThesaurusValues struct {
+	Synonyms []string // Words with similar meaning
+	Antonyms []string // Words with the opposite meaning
 }
 
-// Sense defines an interface for the different meanings of a word
-type Sense interface {
-	Definitions() []string
-	Examples() []string
-	Notes() []string
+// IsSortedForPrimaryResult takes a word and returns true if the first result
+// is a direct match.
+func (r DictionaryResults) IsSortedForPrimaryResult(word string) bool {
+	return len(r) < 1 || r[0].Word == word
+}
 
-	Subsenses() []Sense
+// SortForPrimaryResult takes a word and attempts to find any direct match
+// within the results. If any match is found, it moves that result to the
+// first position of the results (while retaining the other results).
+func (r *DictionaryResults) SortForPrimaryResult(word string) {
+	if r.IsSortedForPrimaryResult(word) {
+		// Short-circuit if we're already sorted
+		return
+	}
+
+	var matchIndex *int
+
+	for i, result := range *r {
+		if result.Word == word {
+			matchIndex = &i
+			break
+		}
+	}
+
+	// Make sure the matchIndex isn't 0, because then the results are already
+	// sorted (the match is already in the first position)
+	if matchIndex != nil && *matchIndex != 0 {
+		i := *matchIndex
+		match := (*r)[i]
+
+		// Sort the slice by placing the matched result at the first position
+		*r = append(DictionaryResults{match}, append((*r)[:i], (*r)[i+1:]...)...)
+	}
+}
+
+// String satisfies fmt.Stringer and dictates the string format of the value
+func (p Pronunciations) String() string {
+	var pronunciationText string
+
+	if len(p) > 0 {
+		pronunciationText = p[0].String()
+	}
+
+	if len(p) > 1 {
+		var pronunciationStrings []string
+		for _, pronunciation := range p {
+			pronunciationStrings = append(pronunciationStrings, pronunciation.String())
+		}
+
+		pronunciationText = fmt.Sprintf("%s (%s)", pronunciationText, strings.Join(pronunciationStrings[1:], " "))
+	}
+
+	return pronunciationText
+}
+
+// String satisfies fmt.Stringer and dictates the string format of the value
+func (p Pronunciation) String() string {
+	return fmt.Sprintf("/%s/", string(p))
+}
+
+// String satisfies fmt.Stringer and dictates the string format of the value
+func (t AttributedText) String() string {
+	text := fmt.Sprintf("%q", t.Text)
+
+	if t.Author != "" {
+		text = fmt.Sprintf("%s - %s", text, t.Author)
+	}
+
+	if t.Source != "" {
+		text = fmt.Sprintf("%s (%s)", text, t.Source)
+	}
+
+	return text
 }

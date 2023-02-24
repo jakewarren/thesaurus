@@ -33,31 +33,52 @@ type InvalidResponseError struct {
 	httpResponse *http.Response
 }
 
-// ValidateResult validates the result and returns an error if invalid
-func ValidateResult(result Result) error {
-	if nil == result {
-		return &EmptyResultError{}
-	} else if len(result.Entries()) < 1 || "" == result.Headword() {
-		return &EmptyResultError{result.Headword()}
+// ValidateDictionaryResults validates the results of a define operation and
+// returns an error if they're invalid
+func ValidateDictionaryResults(word string, results DictionaryResults) error {
+	if len(results) < 1 {
+		return &EmptyResultError{word}
 	}
 
 	return nil
 }
 
-// ValidateAndReturnResult validates the result and returns the result and a nil
-// error if valid. If invalid, it'll return a nil result and an error.
-func ValidateAndReturnResult(result Result) (Result, error) {
-	if err := ValidateResult(result); nil != err {
+// ValidateAndReturnDictionaryResults validates the results of a define
+// operation and returns the results and a nil error if valid. If invalid, it'll
+// return nil results and an error.
+func ValidateAndReturnDictionaryResults(word string, results DictionaryResults) (DictionaryResults, error) {
+	if err := ValidateDictionaryResults(word, results); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return results, nil
+}
+
+// ValidateSearchResults validates the results of a search operation and returns
+// an error if they're invalid
+func ValidateSearchResults(word string, results SearchResults) error {
+	if len(results) < 1 {
+		return &EmptyResultError{word}
+	}
+
+	return nil
+}
+
+// ValidateAndReturnSearchResults validates the results of a search operation
+// and returns the results and a nil error if valid. If invalid, it'll return
+// nil results and an error.
+func ValidateAndReturnSearchResults(word string, results SearchResults) (SearchResults, error) {
+	if err := ValidateSearchResults(word, results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
 // ValidateHTTPResponse validates an HTTP response and returns an error if the
 // response is invalid
 func ValidateHTTPResponse(httpResponse *http.Response, validContentTypes []string, validStatusCodes []int) error {
-	if nil == httpResponse {
+	if httpResponse == nil {
 		return &InvalidResponseError{}
 	}
 
@@ -98,7 +119,7 @@ func ValidateHTTPResponse(httpResponse *http.Response, validContentTypes []strin
 func (e *EmptyResultError) Error() string {
 	msg := emptyResultErrorMessage
 
-	if "" != e.Word {
+	if e.Word != "" {
 		msg = msg + fmt.Sprintf(errorMessageForWordSuffixFormat, e.Word)
 	}
 
