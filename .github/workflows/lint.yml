@@ -16,6 +16,3 @@ jobs:
           only-new-issues: true
           # show file name and line numbers in output
           args: --timeout 15m0s --verbose --out-${NO_FUTURE}format colored-line-number -D errcheck
-
-      - name: test
-        run: go test -v ./...
