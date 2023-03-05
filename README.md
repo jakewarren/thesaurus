@@ -1,5 +1,5 @@
 # thesaurus
-[![CircleCI](https://circleci.com/gh/jakewarren/thesaurus.svg?style=shield)](https://circleci.com/gh/jakewarren/thesaurus)
+[![Build Status](https://github.com/jakewarren/thesaurus/workflows/lint/badge.svg)](https://github.com/jakewarren/thesaurus/actions)
 [![GitHub release](http://img.shields.io/github/release/jakewarren/thesaurus.svg?style=flat-square)](https://github.com/jakewarren/thesaurus/releases])
 [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/jakewarren/thesaurus)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/jakewarren/thesaurus/blob/master/LICENSE)
